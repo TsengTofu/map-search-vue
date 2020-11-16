@@ -77,24 +77,25 @@ export default {
         };
     },
     mounted() {
-        console.log('xx')
+        console.log("初步載入");
     },
+    // 會暫存資料
+    // 原始資料有變動的話才會跟著更新，可以直接操作 state
+    // getter & setter 只能讀取，不能改變
+    //
     computed: {
-        // find_query_result() {
-        //     return this.$store.state.map.find_query_result;
-        // },
-        changePositionType(){
+        changePositionType() {
             // console.log('HelloHelloHelloHelloHelloHelloHello');
             // console.log(this.$store.getters);
             return this.$store.getters.changePositionType;
-        }
+        },
     },
     // 不要用 watch 寫的原因研究
     watch: {
-        changePositionType:function(value){
+        changePositionType: function (value) {
             let map_center = this.changePositionType[0].Position; // 預設中心點是搜尋結果的第一個
             this.initMap(map_center);
-        }
+        },
         // 地圖的 render 是透過 searchbar 的事件帶出來的
         // find_query_result: function (value) {
         //     console.log(value);
@@ -193,6 +194,7 @@ export default {
                     // position: this.map.getCenter(),
                     position: this.changePositionType[i].Position,
                     map: this.map,
+                    // label: 'C', google 預設的地標 icon 裡面會塞指定的文字
                     // html:`<p style="display:block;width:100px;height:100px;background-color:red;">dssdsd</p>`
                     // icon:
                     //     "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png",
@@ -204,27 +206,43 @@ export default {
                 const bounds = new google.maps.LatLngBounds();
                 this.changePositionType.map((item) => {
                     // console.log(item);
-                    bounds.extend(new google.maps.LatLng(item.Position.lat, item.Position.lng));
+                    bounds.extend(
+                        new google.maps.LatLng(
+                            item.Position.lat,
+                            item.Position.lng
+                        )
+                    );
                 });
                 this.map.fitBounds(bounds);
                 // ------
 
                 // info_window------------------------
                 // 透過 InfoWindow 物件建構子建立新訊息視窗
+                // 組字串 但其實好像不能這樣寫，因為在 vue 裡面就有可以自己更新畫面的方式，所以這裡需要想看看
+                // 假設要做輪播的話，可能需要用別的方式處理
+                let infoWindowContent =
+                    `
+                <div class="info-window"><p>` +
+                    this.changePositionType[i].Name +
+                    `</p>` + `<div style="width:100%;height:100px;"><img style="width:100%;height:auto" src="` + this.changePositionType[i].Thumb  +  `"></div>` +
+                    `</div>`;
 
-                const infowindow = new google.maps.InfoWindow({
+                var infowindow = new google.maps.InfoWindow({
                     // 設定想要顯示的內容
-                    content: 'cxcxc',
+                    content: "",
                     // 設定訊息視窗最大寬度
                     maxWidth: 200,
                 });
+                // 這兩種寫法都可以
+                // google.maps.event.addListener(marker, "click", function () {
+                marker.addListener("click", () => {
+                    if (infowindow) {
+                        infowindow.close();
+                    }
 
-                marker.addListener("click", (e) => {
-                    // if (curInfoWindow != "") {
-                    //     curInfoWindow.close();
-                    //     curInfoWindow = "";
-                    // }
-                    // curInfoWindow = infoWindow;
+                    this.map.panTo(marker.getPosition());
+                    // 沒有這行，點到的 marker 不會自動置中
+                    infowindow.setContent(infoWindowContent);
                     // 指定在哪個地圖和地標上開啟訊息視窗
                     infowindow.open(this.map, marker);
                 });

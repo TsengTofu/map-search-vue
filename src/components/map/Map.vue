@@ -184,7 +184,6 @@ export default {
             // 自動抓取要顯示的範圍
             this.$gmapApiPromiseLazy().then((google) => {
                 window.vueGoogleMapsInit(google);
-                console.log("sadsdsd");
                 var bounds = new google.maps.LatLngBounds();
                 this.$refs.gmap.$mapPromise.then(() => {
                     this.modify_data.map((item) => {

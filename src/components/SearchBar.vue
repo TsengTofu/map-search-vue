@@ -56,9 +56,6 @@
 <script>
 export default {
     name: "SearchBar",
-    // props: {
-    //     msg: String,
-    // },
     data() {
         return {
             search_key_words: "",
@@ -78,7 +75,7 @@ export default {
     },
     mounted() {
         // 因為 api 壞掉先這樣寫
-        this.searchKeywordAjaxCall('台北');
+        // this.searchKeywordAjaxCall('台北');
     },
     methods: {
         // call ajax 自動完成
@@ -106,12 +103,13 @@ export default {
             console.log(this.search_key_words, "!!!!");
             // 帶入搜索 call 的 ajax function
 
-            // this.searchKeywordAjaxCall(this.search_key_words);
+            this.searchKeywordAjaxCall(this.search_key_words);
         },
         // 搜索的 function
         // 這隻怪怪的，明天記得先處理這邊
         searchKeywordAjaxCall: function (query_string) {
             console.log(query_string, "query_string");
+            this.find_query_result = [];
             this.axios.get("fake_hotel_data.json").then((response) => {
                 console.log(response.data);
                 response.data.filter((item) => {
@@ -123,7 +121,8 @@ export default {
 
                 console.log(this.find_query_result, "哈囉我是結果");
                 // 再繼續把 map 的結果 render 出來
-                this.renderMap(this.find_query_result);
+                this.$store.dispatch("updateSearchHotelResult", this.find_query_result);
+                // this.renderMap(this.find_query_result);
             });
         },
 
@@ -131,7 +130,7 @@ export default {
         renderMap: function (find_query_result) {
             console.log(find_query_result);
             // 這邊的資料要傳回去最上面再 Render
-            this.$store.dispatch("updateSearchHotelResult", find_query_result);
+            // this.$store.dispatch("updateSearchHotelResult", find_query_result);
             console.log(this.$store.state.map); // 測試資料有沒有改變
         },
     },

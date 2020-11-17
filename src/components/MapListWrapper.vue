@@ -14,7 +14,7 @@
                         <div>
                             <span v-for="n in parseInt(item.Star)" :key="n" class="material-icons-round">star_rate</span>
                         </div>
-                        <!-- 這兩個有可能是空的 -->
+                        <!-- 有可能是空的 -->
                         <p>{{item.ScoreAvg}}</p>
                         <p>{{item.ScoreDesc}}</p>
                         
@@ -31,35 +31,17 @@
 export default {
     name: "MapListWrapper",
     components: {
-        // Map,
-        // SearchBar
+        // ComponentName,
     },
     computed: {
-        // 這樣不就跟 Map.vue 的寫法重複了嗎？
         find_query_result() {
             return this.$store.state.map.find_query_result;
         },
     },
-    watch: {
-        // 少用 watcher 效能不好
-        // find_query_result(value){
-        //     console.log(value);
-        // }
-    },
-    mounted() {
-        // console.log(this.find_query_result);
-
-    },
-    methods:{
-    }
+    methods:{}
 };
 </script>
-
-
-
-
 <style lang="sass" scoped>
-// reset css 之後要拆開，不能全部都寫在一起
 .map-list-wrapper
     ul
         width: 100%

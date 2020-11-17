@@ -1,3 +1,7 @@
+<!-- 待辦：
+1. ResetCSS 抽出來寫
+2. 
+ -->
 <template>
     <div id="app">
         <MapSearchWrapper></MapSearchWrapper>
@@ -15,11 +19,7 @@ export default {
 };
 </script>
 
-
-
-
 <style lang="sass">
-// 最外層
 #app
     font-family: Avenir, Helvetica, Arial, sans-serif
     -webkit-font-smoothing: antialiased
@@ -27,7 +27,6 @@ export default {
     text-align: center
     color: #2c3e50
     margin-top: 60px
-    // 這邊其實應該要寫 reset css
     ul
         list-style: none
         margin: 0px

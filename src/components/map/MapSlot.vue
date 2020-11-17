@@ -1,4 +1,10 @@
 <!-- Load CDN Script Version -->
+<!-- 待辦：
+1. infowindow 還沒寫好
+2. 點擊地圖上的地標、點擊清單會跳到對應的位置
+3. infoWindow 的輪播、連結功能
+4. UI
+ -->
 <template>
     <div id="map"></div>
 </template>
@@ -15,24 +21,15 @@ import { load } from "@zaichaopan/load-script";
     https://www.npmjs.com/package/@googlemaps/markerclustererplus
 */
 import MarkerClusterer from "@googlemaps/markerclustererplus";
-
 export default {
     name: "MapSlot",
-    data() {
-        return {};
-    },
     computed: {
+        // Vuex 取：修改飯店座標經緯度、型別的資料
         changePositionType() {
-            // console.log(this.$store.getters);
             return this.$store.getters.changePositionType;
         },
     },
-    watch: {
-        changePositionType: function () {
-            let map_center = this.changePositionType[0].Position; // 預設中心點是搜尋結果的第一個
-            this.initMap(this.googleMaps, map_center);
-        },
-    },
+    // 確定 Google 部分載入
     async mounted() {
         try {
             let google = await load({
@@ -47,163 +44,96 @@ export default {
             this.googleMaps = google;
             // this.googleMaps = google.maps;
             // console.log(google);
-            // this.initMap(google);
         } catch (error) {
             console.log(error);
         }
     },
+    watch: {
+        // 資料變動，重新渲染 Map
+        changePositionType: function () {
+            let map_center = this.changePositionType[0].Position; // 預設中心點：搜尋結果的第一個
+            this.initMap(this.googleMaps, map_center);
+        },
+    },
     methods: {
+        // 地圖載入
         initMap: function (google, map_center) {
             this.map = new google.maps.Map(document.getElementById("map"), {
                 center: map_center,
                 zoom: 8,
-                streetViewControl: false,
-                // 設定是否讓使用者可以切換地圖樣式：一般、衛星圖等
+                streetViewControl: false, // 設定是否讓使用者可以切換地圖樣式：一般、衛星圖等
                 mapTypeControl: false,
                 gestureHandling: "cooperative",
             });
             this.setMarker(google);
         },
+        // 設定地標
         setMarker: function (google) {
             console.log(google);
-            // 建立一個新地標，先用最簡單的陣列處理
-            // this.modify_data = this.changePositionType;
-
-            // 想辦法把 modify_data 跟 find_query_result 整併：getters
-            // 這樣比較方便處理
             for (var i = 0; this.changePositionType.length > i; i++) {
-                //  console.log(i, this.test_map_data);
-                // this.test_map_data[i].map = this.map;
-                // marker
-                // marker 相關的方法：https://developers.google.com/maps/documentation/javascript/reference/marker
-                // marker 要設定一個清掉的 function，如果碰到問題，marker 用 push 的方法解決
-                // marker ----> setMap(null) 清空
-                // const marker = new google.maps.Marker({
-                //     // position: this.map.getCenter(),
-                //     position: this.changePositionType[i].Position,
-                //     map: this.map,
-                //     // label: 'C', google 預設的地標 icon 裡面會塞指定的文字
-                //     // html:`<p style="display:block;width:100px;height:100px;background-color:red;">dssdsd</p>`
-                //     // icon:
-                //     //     "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png",
-                //     animation: google.maps.Animation.DROP, // 這可以設定動畫，加上動畫之前最好先判斷原本是沒有動畫的
-                // });
-                // 地圖檢視範圍
-                // 這個方法要查：new google.maps.LatLng(25.014304, 121.463782)
-                // const bounds = new google.maps.LatLngBounds();
-                // this.changePositionType.map((item) => {
-                //     // console.log(item);
-                //     bounds.extend(
-                //         new google.maps.LatLng(
-                //             item.Position.lat,
-                //             item.Position.lng
-                //         )
-                //     );
-                // });
-                // this.map.fitBounds(bounds);
-                // ------
-                // info_window------------------------
-                // 透過 InfoWindow 物件建構子建立新訊息視窗
-                // 組字串 但其實好像不能這樣寫，因為在 vue 裡面就有可以自己更新畫面的方式，所以這裡需要想看看
-                // 假設要做輪播的話，可能需要用別的方式處理
-                // let infoWindowContent =
-                //     `
-                // <div class="info-window"><p>` +
+                // this.map.getCenter(); 取得地圖的中心點
+
+                // var infoWindowContent = `<div class="info-window"><p>` + 
                 //     this.changePositionType[i].Name +
-                //     `</p>` +
-                //     `<div style="width:100%;height:100px;"><img style="width:100%;height:auto" src="` +
+                //     `</p><div style="width:100%;height:100px;"><img  style="width:100%;height:auto" src="` +
                 //     this.changePositionType[i].Thumb +
-                //     `"></div>` +
-                //     `</div>`;
+                //     `"></div></div>`;
+
                 // var infowindow = new google.maps.InfoWindow({
-                //     // 設定想要顯示的內容
-                //     content: "",
-                //     // 設定訊息視窗最大寬度
-                //     maxWidth: 200,
-                // });
-                // // 這兩種寫法都可以
-                // // google.maps.event.addListener(marker, "click", function () {
-                // marker.addListener("click", () => {
-                //     if (infowindow) {
-                //         infowindow.close();
-                //     }
-                //     this.map.panTo(marker.getPosition());
-                //     // 沒有這行，點到的 marker 不會自動置中
-                //     infowindow.setContent(infoWindowContent);
-                //     // 指定在哪個地圖和地標上開啟訊息視窗
-                //     infowindow.open(this.map, marker);
+                //     content: infoWindowContent,  // 設定想要顯示的內容
+                //     maxWidth: 200,               // 設定訊息視窗最大寬度
                 // });
             }
-
-            // infowindows這邊要重新寫
 
             const markers = this.changePositionType.map((item) => {
                 return new google.maps.Marker({
                     position: item.Position,
                     map: this.map,
                     animation: google.maps.Animation.DROP,
+                    // label: "", 地標上的文字
+                    // icon: "",  客製化 icon 圖片
                 });
             });
 
+            // markers.addListener("click", () => {
+            //     if (infowindow) {
+            //         infowindow.close();
+            //     }
+            //     this.map.panTo(markers.getPosition()); // 點到的 Marker 自動置中
+            //     infowindow.setContent(infoWindowContent); // 指定地圖的地標開啟視窗
+            //     infowindow.open(this.map, markers);
+            // });
+
             const bounds = new google.maps.LatLngBounds();
             this.changePositionType.map((item) => {
-                // console.log(item);
                 return bounds.extend(
                     new google.maps.LatLng(item.Position.lat, item.Position.lng)
                 );
             });
             this.map.fitBounds(bounds);
-
-            // 文件看這邊：https://googlemaps.github.io/js-markerclustererplus/interfaces/markerclustereroptions.html#enableretinaicons
-
-            // var clusterStyles = [
-            //     {
-            //         textColor: 'white',
-            //         averageCenter: true,
-            //         url:
-            //             "https://unpkg.com/@googlemaps/markerclustererplus@1.0.3/images/m1.png",
-            //         height: 53,
-            //         width: 53,
-            //         // anchor: [22,22],
-            //         anchorIcon: [0, 0],
-            //     },
-            // ];
+            // Google 官方推薦的套件：https://googlemaps.github.io/js-markerclustererplus/interfaces/markerclustereroptions.html
             new MarkerClusterer(this.map, markers, {
-                // imagePath:
-                //     "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m",
-                // clusterClass: "cluster",
-                // imageSizes: [53],
-                // averageCenter: true,
-                // anchor:[10,10]
-                // anchorIcon: [2, 22],
-                // styles: clusterStyles
-                // anchorText:[10,22]
-                // styles: clusterStyles,
-                // styles: [{ height: 36, width: 36, }]
                 styles: [
+                // Array Object
                     {
-                        textColor: "black",
-                        url:
-                            "https://unpkg.com/@googlemaps/markerclustererplus@1.0.3/images/m1.png",
-                        height: 52,
-                        width: 53,
-                        // anchor: [100, 10],
-                        anchorText: [0, 28],
-                        textLineHeight:53,
-                        // className: "pika",
+                        textColor: "black",  // 文字顏色
+                        url: "https://unpkg.com/@googlemaps/markerclustererplus@1.0.3/images/m1.png",
+                        height: 52,          // 高度：更改 inline CSS
+                        width: 53,           // 寬度：更改 inline CSS
+                        anchorText: [0, 28], // 文字的位置
+                        textLineHeight: 53,  // 跑版問題是 LineHeight 造成的
+                        // className: "",    // 設定 Cluster 的 Class，但無法操控（？）
                     },
                 ],
+                // Cluster 不出現數字的做法
                 // calculator: function (markers) {
                 //     var index = 0;
                 //     var count = markers.length.toString();
-
                 //     var dv = count;
                 //     while (dv !== 0) {
                 //         dv = parseInt(dv / 10, 10);
                 //         index++;
                 //     }
-
-                //     // index = Math.min(index, numStyles);
                 //     return {
                 //         text: "",
                 //         index: index,
@@ -214,8 +144,6 @@ export default {
     },
 };
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="sass" scoped>
 #map
     width: 50%

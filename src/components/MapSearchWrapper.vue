@@ -2,7 +2,7 @@
 <template>
     <div class="map-search-wrapper">
         <SearchBarWrapper></SearchBarWrapper>
-        <!-- 地圖顯示的畫面 wrapper -->
+        <!-- 地圖畫面 wrapper -->
         <MapAndList></MapAndList>
     </div>
 </template>

@@ -1,52 +1,13 @@
-<style lang="sass" scoped>
-.search-bar-wrapper
-    width: 80%
-    margin: 0 auto
-    .search-btn-wrapper
-        width: 100%
-        display: flex
-        justify-content: center
-        input
-            width: 75%
-            font-size: 18px
-            border-radius: 4px 0 0 4px
-            border: 1px solid #ddd
-            padding: 0 10px
-        button
-            width: 25%
-            background: #000
-            color: #fff
-            border-style: none
-            font-weight: bold
-            font-size: 18px
-            padding: 10px
-            border-radius: 0 4px 4px 0
-    .auto-complete-list
-        width: 75%
-        background: #eeeeee
-        position: relative
-        z-index: 999
-        ul
-            li
-                padding: 10px
-</style>
-
 <template>
     <div class="search-bar-wrapper">
         <div class="search-btn-wrapper">
             <input type="text" v-model="search_key_words" />
-            <button>搜尋<span class="material-icons">search</span></button>
+            <button>搜尋<span class="material-icons">Search</span></button>
         </div>
         <div class="auto-complete-list">
             <ul>
-                <li
-                    v-for="item in auto_complete_result"
-                    :key="item.value"
-                    @click="chooseLocation(item.label)"
-                >
-                    <a href="#">
-                        <span> {{ item.icon }}{{ item.label }} </span>
-                    </a>
+                <li v-for="item in auto_complete_result" :key="item.value" @click="chooseLocation(item.label)">
+                    <a href="#"><span>{{ item.icon }} {{ item.label }}</span></a>
                 </li>
             </ul>
         </div>
@@ -71,11 +32,9 @@ export default {
     },
     created() {
         // console.log(this.$store.state.map);
-        // 確認看看能不能拿到 state
     },
     mounted() {
-        // 因為 api 壞掉先這樣寫
-        // this.searchKeywordAjaxCall('台北');
+        // this.searchKeywordAjaxCall('台北'); // 因為 api 壞掉先這樣寫
     },
     methods: {
         // call ajax 自動完成
@@ -88,7 +47,6 @@ export default {
                 keyword;
             // 這邊會有跨網域請求的問題，解決方法蠻神奇的
             this.axios.get(`${cors}${api}`).then((response) => {
-                // console.log(response.data[0].icon);
                 console.log(response.data);
                 this.auto_complete_result = response.data;
                 // icon: "location"
@@ -136,4 +94,35 @@ export default {
     },
 };
 </script>
-
+<style lang="sass" scoped>
+.search-bar-wrapper
+    width: 80%
+    margin: 0 auto
+    .search-btn-wrapper
+        width: 100%
+        display: flex
+        justify-content: center
+        input
+            width: 75%
+            font-size: 18px
+            border-radius: 4px 0 0 4px
+            border: 1px solid #ddd
+            padding: 0 10px
+        button
+            width: 25%
+            background: #000
+            color: #fff
+            border-style: none
+            font-weight: bold
+            font-size: 18px
+            padding: 10px
+            border-radius: 0 4px 4px 0
+    .auto-complete-list
+        width: 75%
+        background: #eeeeee
+        position: relative
+        z-index: 999
+        ul
+            li
+                padding: 10px
+</style>

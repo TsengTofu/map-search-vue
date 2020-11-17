@@ -9,7 +9,6 @@
     <!-- gmap-map 地圖本身 -->
     <gmap-map :center="center" :zoom="15" style="width: 50%; height: 80vh" ref="gmap">
         <!-- GmapMarker：套件提供，但不能客製化 -->
-        <!-- Cluster 可以用另外一組套件，好像會有不維護的問題？？？？看他開的 issue -->
         <gmap-custom-marker v-for="(item, index) in find_query_result" :key="index" :marker="item.Position" alignment="bottomright" :offsetX="-10" :offsetY="17.5" class="price-marker" @click.native="getTargetHotelData(item.ID, item.Position)">
             <p style="margin: 0px">NT$ {{ item.DisplayPrice.Room }}</p>
             <span class="direction"></span>

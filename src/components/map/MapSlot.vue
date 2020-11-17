@@ -19,6 +19,7 @@ import { load } from "@zaichaopan/load-script";
 /*
     Marker 地標集合套件，需額外引入(735kb)
     https://www.npmjs.com/package/@googlemaps/markerclustererplus
+    https://googlemaps.github.io/js-markerclustererplus/index.html
 */
 import MarkerClusterer from "@googlemaps/markerclustererplus";
 export default {

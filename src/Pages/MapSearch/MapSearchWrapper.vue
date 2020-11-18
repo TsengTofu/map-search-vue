@@ -1,20 +1,20 @@
 <!-- map search 最外層 -->
 <template>
     <div class="map-search-wrapper">
-        <SearchBarWrapper></SearchBarWrapper>
+        <SearchBarWrapper />
         <!-- 地圖畫面 wrapper -->
-        <MapAndList></MapAndList>
+        <MapAndListＷrapper />
     </div>
 </template>
 
 <script>
-import SearchBarWrapper from "./SearchBarＷrapper"
-import MapAndList from "./MapAndList"
+import SearchBarWrapper from "./Components/Wrapper/SearchBarＷrapper"
+import MapAndListＷrapper from "./Components/Wrapper/MapAndListＷrapper"
 export default {
     name: "MapSearchWrapper",
     components: {
         SearchBarWrapper,
-        MapAndList
+        MapAndListＷrapper
     },
 };
 </script>

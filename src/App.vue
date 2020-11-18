@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import MapSearchWrapper from "./components/MapSearchWrapper";
+import MapSearchWrapper from "./Pages/MapSearch/MapSearchWrapper";
 
 export default {
     name: "App",

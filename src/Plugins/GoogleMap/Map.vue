@@ -20,7 +20,7 @@
 
 <script>
 import GmapCustomMarker from "vue2-gmap-custom-marker";
-import CommonPopUp from "../CommonPopUp";
+import CommonPopUp from "../../Pages/MapSearch/Components/CommonPopUp";
 export default {
     name: "Map",
     components: {

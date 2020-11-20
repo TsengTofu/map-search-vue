@@ -95,7 +95,7 @@ export default {
     methods: {
         getTargetHotelData: function (hotel_id, hotel_position) {
             console.log("hotel_id", hotel_id);
-            this.changePositionType.map((item) => {
+            this.find_query_result.map((item) => {
                 if (item.ID == hotel_id) {
                     this.target_hotel_data = item;
                 }
